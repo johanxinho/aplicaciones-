@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nexo</title>
+  <meta name="description" content="Nexo: tu centro de mando personal con IA">
+
+  <!-- iOS: pantalla completa, barra de estado y icono -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nexo">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-180.png">
+  <link rel="manifest" href="./manifest.json">
+
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell" id="shell">
+    <!-- Columna izquierda (≥900 px): navegación y registros del módulo -->
+    <aside class="col-left" aria-label="Navegación">
+      <div class="brand"><span class="brand-mark" id="brand-mark"></span>Nexo</div>
+      <nav class="side-nav" id="side-nav" aria-label="Módulos"></nav>
+      <div>
+        <div class="label records-title" id="records-title"></div>
+        <div id="records"></div>
+      </div>
+      <div class="grow"></div>
+      <button class="side-item" id="side-settings" type="button"></button>
+    </aside>
+
+    <!-- Columna central: controles del módulo activo -->
+    <div class="col-center">
+      <header class="topbar">
+        <span class="brand-mark mobile-brand" id="mobile-brand-mark"></span>
+        <h1 id="title"></h1>
+        <span class="grow"></span>
+        <span class="badge-offline" id="offline-badge" hidden></span>
+        <button class="icon-btn" id="btn-history" type="button" aria-label="Historial y exportaciones"></button>
+      </header>
+      <main id="main" class="stack" tabindex="-1"></main>
+    </div>
+
+    <!-- Columna derecha: vista previa en vivo (en móvil queda debajo) -->
+    <aside class="col-right" id="col-right" aria-label="Vista previa">
+      <div id="preview" class="stack"></div>
+    </aside>
+  </div>
+
+  <!-- Barra inferior (móvil): Hoy, Finanzas, Chat IA, Negocio, Más -->
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Principal"></nav>
+
+  <noscript><p style="padding:24px">Nexo necesita JavaScript.</p></noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Nexo · tokens.css
+   Sistema de diseño: Material Design 3 (Material You) en modo oscuro permanente.
+   Estética Developer Premium (Linear / Apple / Vercel) + Glow UI / Aurora.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* ---- Superficies (Obsidian Glass sobre negro puro) ---- */
+  --bg: #050508;
+  --surface-1: #0F1017;
+  --surface-2: #161822;
+  --surface-3: #202332;
+  --scrim: rgba(2, 2, 4, 0.72);
+
+  /* ---- Bordes de precisión y micro-highlights ---- */
+  --outline: rgba(255, 255, 255, 0.08);
+  --outline-strong: rgba(255, 255, 255, 0.16);
+  --outline-glow: rgba(129, 140, 248, 0.35);
+  --highlight-inner: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* ---- Tipografía de Alto Contraste ---- */
+  --text: #FFFFFF;
+  --text-body: #E2E4EB;
+  --text-2: #9CA1B4;
+  --text-3: #6C7289;
+
+  /* ---- Acento Aurora (Indigo-Cyan-Violeta) ---- */
+  --accent: #818CF8;
+  --accent-strong: #6366F1;
+  --accent-light: #A5B4FC;
+  --on-accent: #050614;
+  --accent-container: rgba(99, 102, 241, 0.14);
+  --accent-container-hi: rgba(99, 102, 241, 0.26);
+  --accent-gradient: linear-gradient(135deg, #4F46E5 0%, #6366F1 45%, #9333EA 100%);
+  --blue: #38BDF8;
+  --violet: #A855F7;
+  --pink: #EC4899;
+
+  /* ---- Semánticos ---- */
+  --income: #34D399;
+  --income-container: rgba(52, 211, 153, 0.14);
+  --expense: #F87171;
+  --expense-container: rgba(248, 113, 113, 0.14);
+  --warning: #FBBF24;
+  --warning-container: rgba(251, 191, 36, 0.14);
+
+  /* ---- Radios ---- */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 26px;
+  --r-pill: 999px;
+
+  /* ---- Tipografía ---- */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-xs: 0.72rem;
+  --fs-sm: 0.8125rem;
+  --fs-md: 0.9375rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.45rem;
+  --fs-2xl: 2rem;
+
+  /* ---- Espaciado ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  /* ---- Movimiento y Transiciones ---- */
+  --dur-1: 120ms;
+  --dur-2: 240ms;
+  --dur-3: 400ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-emph: cubic-bezier(0.05, 0.7, 0.1, 1);
+
+  /* ---- Glow UI / Aurora ---- */
+  --glow-a: 56, 189, 248;     /* cyan (rgb) */
+  --glow-b: 99, 102, 241;    /* indigo (rgb) */
+  --glow-c: 168, 85, 247;    /* violeta (rgb) */
+  --glow-alpha: 0.28;
+  --glow-alpha-think: 0.85;
+  --glow-speed: 7s;
+  --glow-speed-think: 2s;
+  --glow-blur: 24px;
+
+  /* ---- Elevación & Sombras de Estudio ---- */
+  --shadow-1: 0 2px 8px -1px rgba(0, 0, 0, 0.5), var(--highlight-inner);
+  --shadow-2: 0 10px 36px -4px rgba(0, 0, 0, 0.65), var(--highlight-inner);
+  --shadow-glow: 0 0 28px -4px rgba(99, 102, 241, 0.35);
+
+  /* ---- Layout / Safe Area iOS ---- */
+  --nav-h: 68px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 1ms;
+    --dur-2: 1ms;
+    --dur-3: 1ms;
+  }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
