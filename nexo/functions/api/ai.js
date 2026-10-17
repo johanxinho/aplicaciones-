@@ -1,5 +1,5 @@
 /**
- * Nexo · Cloudflare Pages Function  →  POST /api/ai
+ * Nexo · Cloudflare Worker/Pages Function  →  POST /api/ai
  *
  * Un único endpoint para todos los usos de IA. El cliente envía un "mode"
  * (chat | receipt | transcribe | food | translate | trip) y, según el modo,
@@ -8,8 +8,8 @@
  * Cambiar de modelo: edita DEFAULT_MODEL o define la variable GEMINI_MODEL.
  */
 
-// Modelo Gemini Flash vigente y estable.
-const DEFAULT_MODEL = 'gemini-3.5-flash';
+// Modelo Gemini Flash disponible para generación de contenido multimodal.
+const DEFAULT_MODEL = 'gemini-2.5-flash';
 
 /* ---------------------------- Límites de tamaño ---------------------------- */
 const LIMITS = {
@@ -244,7 +244,7 @@ export async function onRequestPost({ request, env }) {
     if (origin && origin !== new URL(request.url).origin) return fail(403, 'Origen no permitido.');
 
     const apiKey = env.GEMINI_API_KEY;
-    if (!apiKey) return fail(500, 'Falta configurar la variable GEMINI_API_KEY en Cloudflare Pages.');
+    if (!apiKey) return fail(500, 'Falta configurar el secreto GEMINI_API_KEY en Cloudflare.');
 
     if (!(request.headers.get('Content-Type') || '').includes('application/json')) {
       return fail(415, 'Content-Type debe ser application/json.');

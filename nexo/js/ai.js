@@ -1,5 +1,5 @@
 /* Nexo · js/ai.js — cliente del endpoint /api/ai y grabación de audio.
-   No contiene claves: todo pasa por la Pages Function. */
+   No contiene claves: todo pasa por la función de Cloudflare. */
 
 export class AIError extends Error {
   constructor(message, status = 0) { super(message); this.name = 'AIError'; this.status = status; }
@@ -33,7 +33,7 @@ export async function ask(mode, payload = {}, { signal } = {}) {
     try { body = await res.json(); } catch (_) { /* respuesta no JSON */ }
     if (!res.ok) {
       if ([404, 405, 501].includes(res.status) && !body) {
-        throw new AIError('El backend /api/ai no está disponible. Usa "wrangler pages dev" en local o despliega en Cloudflare Pages.', res.status);
+        throw new AIError('El backend /api/ai no está disponible. Inicia el Worker localmente o despliega en Cloudflare.', res.status);
       }
       throw new AIError(body?.error || `Error del servidor (${res.status}).`, res.status);
     }

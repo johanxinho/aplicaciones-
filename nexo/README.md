@@ -1,6 +1,6 @@
 # 🌐 Nexo — Centro de Mando Personal con IA
 
-**Nexo** es una Progressive Web App (PWA) de alto rendimiento, diseñada específicamente para **iPhone** (Safari en pantalla completa / standalone), que actúa como tu centro de mando personal con inteligencia artificial. Todo el proyecto está construido con tecnologías web modernas y puras (sin frameworks, sin paso de build, módulos ES puros) y respaldado por una **Cloudflare Pages Function** serverless conectada a **Google Gemini Flash**.
+**Nexo** es una Progressive Web App (PWA) de alto rendimiento, diseñada específicamente para **iPhone** (Safari en pantalla completa / standalone), que actúa como tu centro de mando personal con inteligencia artificial. Todo el proyecto está construido con tecnologías web modernas y puras (sin frameworks, sin paso de build, módulos ES puros) y respaldado por un **Cloudflare Worker** conectado a **Google Gemini Flash**.
 
 Todo el stack es **100% gratuito** y funciona **sin conexión a internet** (IndexedDB) para todos los registros locales, activando la IA solo cuando requieres análisis, visión o transcripción.
 
@@ -110,7 +110,10 @@ nexo/
 │   └── viajes.js           # Módulo Viajes
 ├── functions/
 │   └── api/
-│       └── ai.js           # Cloudflare Pages Function (Backend seguro para Gemini Flash)
+│       └── ai.js           # Endpoint de IA (backend seguro para Gemini Flash)
+├── _worker.js              # Worker que conecta /api/ai y los archivos estáticos
+├── wrangler.jsonc          # Configuración de despliegue del Worker nexo
+├── .assetsignore           # Evita publicar el código del backend como archivo estático
 └── README.md
 ```
 
@@ -122,7 +125,7 @@ nexo/
 2. Inicia sesión con tu cuenta de Google.
 3. Haz clic en **"Get API key"** (o "Crear clave de API").
 4. Elige un proyecto y copia tu clave (comienza con `AIzaSy...`).
-5. El plan gratuito de Gemini incluye cuota suficiente para uso personal continuo del modelo Flash vigente (`gemini-3.8-flash`).
+5. El plan gratuito de Gemini ofrece una cuota limitada para probar el modelo Flash (`gemini-2.5-flash`); consulta Google AI Studio para ver los límites actuales.
 
 ---
 
@@ -140,58 +143,55 @@ http://localhost:8080
 ```
 
 ### Opción B: Prueba completa local con IA (usando Wrangler)
-Para emular la Cloudflare Pages Function `/api/ai` localmente con tu clave de Gemini:
+Desde la carpeta `nexo`, inicia el mismo Worker que se despliega en Cloudflare:
 
 ```bash
-# Ejecuta Wrangler pasando tu clave como variable de entorno:
-npx wrangler pages dev . --binding GEMINI_API_KEY="TU_CLAVE_AIzaSy..." --port 8788
+npx wrangler dev --port 8788
 ```
+
+Para desarrollo local, guarda la clave en un archivo `.dev.vars` dentro de `nexo` (no lo subas al repositorio):
+
+```text
+GEMINI_API_KEY=TU_CLAVE_AIzaSy...
+```
+
 Luego abre:
 ```text
 http://localhost:8788
 ```
 
----
+## 🚀 3. Despliegue en Cloudflare Worker
 
-## 🚀 3. Despliegue en Cloudflare Pages (100% Gratis)
+El Worker de este proyecto se llama `nexo` (URL: `nexo.johanrestrepoo.workers.dev`). La configuración `wrangler.jsonc` hace que el Worker atienda `/api/ai` y sirva la aplicación desde el mismo dominio.
 
-### Método A: Mediante Git (GitHub o GitLab) — Recomendado
-1. Sube tu carpeta `nexo` a un repositorio en **GitHub**.
-2. Entra a tu [Panel de Cloudflare](https://dash.cloudflare.com/).
-3. En el menú izquierdo ve a **Workers & Pages** → **Create application**.
-4. Haz clic en la pestaña **Pages** y selecciona **Connect to Git**.
-5. Selecciona tu repositorio `nexo`.
-6. En la pantalla de configuración:
-   - **Project name**: `nexo`
-   - **Production branch**: `main`
-   - **Framework preset**: `None`
-   - **Build command**: *(dejar en blanco)*
-   - **Build output directory**: *(dejar en blanco o poner `.`) *
-7. Haz clic en **Save and Deploy**.
+### Si el repositorio ya está conectado al Worker por Git
+Conserva la conexión y despliega desde la raíz `nexo/`. Cloudflare debe detectar `wrangler.jsonc` y desplegar el Worker llamado `nexo`. Si el panel solicita comandos:
 
-### Método B: Mediante Wrangler CLI directo
-Si prefieres desplegar desde la terminal sin Git:
+- **Root directory**: `nexo`
+- **Build command**: *(dejar en blanco)*
+- **Deploy command**: `npx wrangler deploy`
+
+Al desplegar, confirma que se actualice el Worker existente `nexo`, no que se cree otro Worker con un nombre distinto.
+
+### Despliegue manual con Wrangler
+Desde la carpeta `nexo`, si ya iniciaste sesión con `npx wrangler login`:
 ```bash
-npx wrangler pages deploy . --project-name nexo
+npx wrangler deploy
 ```
 
----
+## ⚙️ 4. Configurar `GEMINI_API_KEY` en Cloudflare
 
-## ⚙️ 4. Configurar `GEMINI_API_KEY` en Cloudflare Pages
+Guarda la clave como secreto del Worker; no la pongas en los archivos de la aplicación.
 
-Para que tu backend `/api/ai` se comunique con Gemini de manera segura y sin exponer la clave en el cliente:
+Desde una terminal autenticada con Wrangler:
 
-1. En el panel de Cloudflare, ve a **Workers & Pages** y selecciona tu proyecto **nexo**.
-2. Ve a la pestaña **Settings** (Ajustes) en la parte superior.
-3. En el submenú lateral izquierdo, entra en **Environment variables** (Variables de entorno).
-4. En la sección **Production**, haz clic en **Add variable**:
-   - **Variable name**: `GEMINI_API_KEY`
-   - **Value**: *(Pega tu clave `AIzaSy...`)*
-5. *(Opcional)* Si en el futuro deseas cambiar el modelo sin tocar el código, añade la variable:
-   - **Variable name**: `GEMINI_MODEL`
-   - **Value**: `gemini-3.8-flash`
-6. Haz clic en **Save** (Guardar).
-7. ⚠️ **Importante**: Ve a la pestaña **Deployments**, pulsa en los tres puntos `...` del último despliegue y selecciona **Retry deployment** (o haz un nuevo commit) para activar la variable en producción.
+```bash
+npx wrangler secret put GEMINI_API_KEY
+```
+
+Cuando lo solicite, pega la clave de Google AI Studio. También puedes añadirla en el panel del Worker `nexo`, en **Settings → Variables and Secrets → Add**, como tipo **Secret**. Luego vuelve a desplegar o crea un nuevo despliegue para aplicar los cambios.
+
+No es necesario crear otra página ni exponer la clave en el navegador: la web y el endpoint viven en el mismo Worker.
 
 ---
 
@@ -210,7 +210,7 @@ Para que tu backend `/api/ai` se comunique con Gemini de manera segura y sin exp
 
 ## 🔒 6. Seguridad y Respaldo de Datos
 
-- **Sin claves en el cliente**: Ninguna clave de API se almacena en el teléfono ni viaja en el frontend. Todo pasa por la Pages Function.
+- **Sin claves en el cliente**: Ninguna clave de API se almacena en el teléfono ni viaja en el frontend. Todo pasa por el Worker.
 - **Sanitización XSS**: Todo el contenido generado por la IA o escrito por el usuario se escapa antes de renderizarse.
 - **Almacenamiento Local Soberano**: Todos tus registros (gastos, clientes, tareas, notas, salud) se quedan en tu iPhone dentro de `IndexedDB`.
 - **Exportación e Importación**:
